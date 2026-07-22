@@ -47,9 +47,3 @@ content-type: application/json
 `/docs` lists every endpoint with a working "Try it out" for the full CRUD cycle.
 
 ![Swagger UI screenshot](swagger-screenshot.jpg)
-
-*(Screenshot placeholder — replace `swagger-screenshot.png` with your own screenshot of `http://localhost:8000/docs` after running the server locally.)*
-
-## The mortality experiment
-
-*(Optional extra — after creating a few tasks and restarting the server, write two sentences here about what happened to the data and why. This is the setup for Week 3.)*
