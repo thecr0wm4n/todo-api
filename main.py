@@ -47,9 +47,14 @@ def health():
     return {"status": "ok"}
 
 
-@app.get("/tasks", summary="List tasks", description="Returns every task currently in memory.")
-def list_tasks():
-    return tasks
+@app.get("/tasks", summary="List tasks", description="Returns tasks, optionally filtered by search term and/or done status.")
+def list_tasks(search: str | None = None, done: bool | None = None):
+    result = tasks
+    if search:
+        result = [t for t in result if search.lower() in t.title.lower()]
+    if done is not None:
+        result = [t for t in result if t.done == done]
+    return result
 
 
 @app.get("/tasks/{task_id}", summary="Get one task", description="Returns a single task by id, or 404 if it does not exist.")
