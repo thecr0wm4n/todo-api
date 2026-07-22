@@ -30,6 +30,9 @@ tasks: list[Task] = [
 ]
 next_id = 4
 
+class TaskUpdate(BaseModel):
+    title: str = ""
+    done: bool = False
 
 def find_task(task_id: int) -> Task | None:
     return next((t for t in tasks if t.id == task_id), None)
@@ -66,3 +69,24 @@ def create_task(payload: TaskCreate):
     tasks.append(task)
     next_id += 1
     return task
+
+
+@app.put("/tasks/{task_id}")
+def update_task(task_id: int, payload: TaskUpdate):
+    task = find_task(task_id)
+    if task is None:
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    if not payload.title.strip():
+        raise HTTPException(status_code=400, detail="title is required and cannot be empty")
+    task.title = payload.title.strip()
+    task.done = payload.done
+    return task
+
+
+@app.delete("/tasks/{task_id}", status_code=204)
+def delete_task(task_id: int):
+    task = find_task(task_id)
+    if task is None:
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    tasks.remove(task)
+    return None
