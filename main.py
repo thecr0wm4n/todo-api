@@ -17,6 +17,10 @@ class Task(BaseModel):
     done: bool = False
 
 
+class TaskCreate(BaseModel):
+    title: str = ""
+
+
 # In-memory "database" — resets every time the server restarts.
 tasks: list[Task] = [
     Task(id=1, title="Buy milk", done=False),
@@ -50,4 +54,15 @@ def get_task(task_id: int):
     task = find_task(task_id)
     if task is None:
         raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    return task
+
+
+@app.post("/tasks", status_code=201)
+def create_task(payload: TaskCreate):
+    global next_id
+    if not payload.title.strip():
+        raise HTTPException(status_code=400, detail="title is required and cannot be empty")
+    task = Task(id=next_id, title=payload.title.strip(), done=False)
+    tasks.append(task)
+    next_id += 1
     return task
